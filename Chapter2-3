@@ -1,0 +1,12 @@
+#주민등록번호 나누기 (첫 번째 방법)
+pin = "123456-7891011"
+yyyymmdd = pin[:6]
+num = pin[7:]
+print(yyyymmdd)
+print(num)
+
+#주민등록번호 나누기 (두 번째 방법)
+pin = "123456-7891011"
+yyyymmdd, num = pin.split('-')
+print(yyyymmdd)
+print(num)
