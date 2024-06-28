@@ -1,0 +1,11 @@
+language = 80
+english = 75
+math = 55
+
+average = (language+english+math)/3
+print("홍길동의 평균 점수 = ", average)
+
+grade = [80, 75, 55]
+sum = grade[0]+grade[1]+grade[2]
+average = sum/len(grade)
+print("홍길동의 평균 점수 = ", average)
