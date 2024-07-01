@@ -1,0 +1,14 @@
+#파일에 문자열을 쓰고 읽기
+#case1
+f1 = open("새파일.txt", 'w')
+f1.write("Life is too short")
+f1.close()
+f2 = open("새파일.txt", 'r')
+print(f2.read())
+
+#case2
+with open("새파일.txt", "w") as f1:
+  f1.write("Life is too short")
+
+f2 = open("새파일.txt", "r")
+print(f2.read())
