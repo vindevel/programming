@@ -1,0 +1,11 @@
+#Life is too short\nyou need java라 쓰고 java를 python으로 바꿔 저장하라.
+f = open('새파일.txt', 'w')
+f.write("Life is too short\nyou need java")
+
+f = open('새파일.txt', 'r')
+body = f.read()
+f.close()
+body = body.replace("java", "python")
+f = open('새파일.txt', 'w')
+f.write(body)
+f.close()
