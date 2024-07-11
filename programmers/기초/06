@@ -1,0 +1,19 @@
+#두 정수 a, b가 주어질 때 다음과 같은 형태의 계산식을 출력하는 코드를 작성해 보세요.
+#a + b = c
+#제한사항 = 1 ≤ a, b ≤ 100
+
+#case1
+a, b = map(int, input().strip().split(' '))
+print("{0} + {1} = {2}".format(a,b,a+b))
+
+#case2
+a, b = map(int, input().strip().split(' '))
+print("%d + %d = %d" %(a, b, a+b))
+
+#case3
+a, b = map(int, input().strip().split(' '))
+print(a, "+", b, "=", a+b)
+
+#case4
+a, b = map(int, input().strip().split(' '))
+print(f'{a} + {b} = {a + b}')
