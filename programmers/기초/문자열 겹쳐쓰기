@@ -1,0 +1,38 @@
+#문자열 my_string, overwrite_string과 정수 s가 주어집니다. 문자열 my_string의 인덱스 s부터 overwrite_string의 길이만큼을 문자열 overwrite_string으로 바꾼 문자열을 return 하는 solution 함수를 작성해 주세요.
+
+#case1
+def solution(my_string, overwrite_string, s):
+    a = []
+    str1=list(my_string)
+    str2=list(overwrite_string)
+
+    i, j = 0, 0
+
+    for i in range(len(str1)):
+        if i==s:
+            for j in range(len(str2)):
+                a.append(str2[j])
+
+                if len(str1)< i+len(str2):
+                    break
+        elif i>s:
+            i = i+(len(str2)-1)
+            
+            if i>(len(str1)-1):
+                break
+
+            else:
+                a.append(str1[i])
+
+        else:
+            a.append(str1[i])
+            
+    answer="".join(a)
+    
+    return answer
+
+#case2
+def solution(my_string, overwrite_string, s):
+answer = my_string[:s] + overwrite_string + my_string[s+len(overwrite_string):]
+
+return answer
