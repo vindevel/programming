@@ -25,6 +25,9 @@ plt.xlabel('length')
 plt.ylabel('weight')
 plt.show()
 
+#훈련 세트와 테스트 세트로 나누기
+train_input, test_input, train_target, test_target = train_test_split(perch_length, perch_weight, random_state=42)
+
 #2차원 배열로 변경
 train_input = train_input.reshape(-1, 1)
 test_input = test_input.reshape(-1, 1)
