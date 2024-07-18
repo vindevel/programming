@@ -1,0 +1,66 @@
+#데이터 불러오기
+from tensorflow import keras
+
+(train_input, train_target), (test_input, test_target) = keras.datasets.fashion_mnist.load_data()
+
+#전달받은 데이터 크기
+print(train_input.shape, train_target.shape)
+print(test_input.shape, test_target.shape)
+
+#훈련 데이터 이미지 출력해보기
+import matplotlib.pyplot as plt
+fig, axs = plt.subplots(1, 10, figsize=(10,10))
+
+for i in range(10):
+    axs[i].imshow(train_input[i], cmap = 'gray_r')
+    axs[i].axis('off')
+
+plt.show()
+
+#처음 10개의 샘플의 타깃값 리스트 생성
+print([train_target[i] for i in range(10)])
+
+#레이블 당 샘플 개수
+import numpy as np
+
+print(np.unique(train_target, return_counts = True))
+
+#로지스틱 회귀
+#1차원 배열로 변환
+train_scaled = train_input / 255.0
+train_scaled = train_scaled.reshape(-1, 28*28)
+print(train_scaled.shape)
+
+#교차 검증으로 성능 확인
+from sklearn.model_selection import cross_validate
+from sklearn.linear_model import SGDClassifier
+
+sc = SGDClassifier(loss = 'log_loss', max_iter = 5, random_state = 42)
+scores = cross_validate(sc, train_scaled, train_target, n_jobs = -1)
+
+print(np.mean(scores['test_score']))
+
+#인공신경망(검증세트 분리)
+from sklearn.model_selection import train_test_split
+
+train_scaled, val_scaled, train_target, val_target = train_test_split(train_scaled, train_target, test_size = 0.2, random_state=42)
+
+#훈련 세트, 검증 세트 크기
+print(train_scaled.shape, train_target.shape)
+print(val_scaled.shape, val_target.shape)
+
+#밀집층 구현
+dense = keras.layers.Dense(10, activation='softmax', input_shape=(784,))
+model = keras.Sequential(dense)
+
+#케라스 모델 훈련하기 전 설정
+model.compile(loss='sparse_categorical_crossentropy', metrics = 'accuracy')
+
+#패션 MNIST 데이터의 타깃값
+print(train_target[:10])
+
+#모델 훈련
+model.fit(train_scaled, train_target, epochs = 5)
+
+#모델의 성능 평가
+model.evaluate(val_scaled, val_target)
