@@ -1,0 +1,96 @@
+#패션 MNIST 데이터 불러오기
+from tensorflow import keras
+from sklearn.model_selection import train_test_split
+
+(train_input, train_target), (test_input, test_target) = keras.datasets.fashion_mnist.load_data()
+
+train_scaled = train_input.reshape(-1, 28, 28, 1) / 255.0
+
+train_scaled, val_scaled, train_target, val_target = train_test_split(train_scaled, train_target, test_size = 0.2, random_state = 42)
+
+#첫 번째 합성곱 층 만들기
+
+model = keras.Sequential()
+model.add(keras.layers.Conv2D(32, kernel_size = 3, activation = 'relu', padding = 'same', input_shape = (28, 28, 1)))
+
+#첫 번째 풀링 층 추가
+model.add(keras.layers.MaxPooling2D(2))
+
+#두 번째 합성곱 층 만들기
+model.add(keras.layers.Conv2D(64, kernel_size = 3, activation = 'relu', padding = 'same'))
+
+#두 번째 풀링 층 추가
+model.add(keras.layers.MaxPooling2D(2))
+
+#특성맵 일렬로 펼치기
+model.add(keras.layers.Flatten())
+
+#밀집 은닉층 추가
+model.add(keras.layers.Dense(100, activation = 'relu'))
+
+#드롭아웃 추가
+model.add(keras.layers.Dropout(0.4))
+
+#출력층 추가
+model.add(keras.layers.Dense(10, activation = 'softmax'))
+
+#모델 구조 출력
+model.summary()
+
+#층의 구성을 그림으로 표현
+keras.utils.plot_model(model)
+
+#그림에 입력과 출력의 크기 표시
+keras.utils.plot_model(model, show_shapes = True)
+
+#모델 컴파일
+model.compile(optimizer = 'adam', loss = 'sparse_categorical_crossentropy', metrics = 'accuracy')
+
+#ModelCheckpoint 콜백
+checkpoint_cb = keras.callbacks.ModelCheckpoint('best-cnn-model.h5', save_best_only = True)
+
+#EarlyStopping 콜백
+early_stopping_cb = keras.callbacks.EarlyStopping(patience = 2, restore_best_weights = True)
+
+#모델 훈련
+history = model.fit(train_scaled, train_target, epochs = 20, validation_data = (val_scaled, val_target), callbacks = [checkpoint_cb, early_stopping_cb])
+
+#손실 그래프
+import matplotlib.pyplot as plt
+
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+
+plt.xlabel('epoch')
+plt.ylabel('loss')
+plt.legend(['train', 'val'])
+plt.show()
+
+#성능평가
+model.evaluate(val_scaled, val_target)
+
+#첫 번째 샘플 이미지
+plt.imshow(val_scaled[0].reshape(28,28), cmap='gray_r')
+plt.show()
+
+#첫 번째 샘플 이미지에 대한 예측 확률 출력
+preds = model.predict(val_scaled[0:1])
+print(preds)
+
+#확률을 막대 그래프로 표현
+plt.bar(range(10), preds[0])
+
+plt.xlabel('class')
+plt.ylabel('prob.')
+plt.show()
+
+classes = ['티셔츠', '바지', '스웨터', '드레스', '코트', '샌달', '셔츠', '스니커즈', '가방', '앵클 부츠']
+
+#classes를 이용해 결과 확인
+import numpy as np
+
+print(classes[np.argmax(preds)])
+
+#합성곱 신경망의 일반화 성능
+test_scaled = test_input.reshape(-1, 28, 28, 1) / 255.0
+model.evaluate(test_scaled, test_target)
